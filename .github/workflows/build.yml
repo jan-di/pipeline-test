@@ -1,28 +1,28 @@
 name: Build Docker Images
 
 env:
-  GITHUB_TAG: 'ghcr.io/jan-di/pipeline-test'
+  GITHUB_TAG: "ghcr.io/jan-di/pipeline-test"
   PLATFORMS: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7
 
 on:
   push:
     branches:
-      - 'main'
+      - "main"
     tags:
-      - 'v*'
+      - "v*"
   pull_request:
     branches:
-      - 'main'
+      - "main"
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v3
-      -
-        name: Docker Metadata
+
+      - name: Docker Metadata
         id: docker_meta
         uses: docker/metadata-action@v4
         with:
@@ -34,22 +34,22 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-      -
-        name: Login to GitHub Container Registry
+
+      - name: Login to GitHub Container Registry
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2 
+        uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Set up QEMU
+
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
-      -
-        name: Set up Docker Buildx
+
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      -
-        name: Build and push
+
+      - name: Build and push
         uses: docker/build-push-action@v4
         with:
           context: .
