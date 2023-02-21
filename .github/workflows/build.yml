@@ -60,3 +60,9 @@ jobs:
           platforms: ${{ env.PLATFORMS }}
           cache-from: type=registry,ref=${{ env.GITHUB_TAG }}:main
           cache-to: type=inline
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          body_path: CHANGELOG.md
